@@ -2773,3 +2773,83 @@ update user set host ='%' where user = 'root';
 
 ### 8.5 通过git仓库部署项目
 
+先来了解一下简单的Linux命令：
+
+```shell
+#退出
+exit
+
+#当前文件夹下的所有文件
+ls
+
+#当前位置
+pwd
+
+#创建文件夹
+mkdir 文件夹名
+```
+
+1、在服务器终端的根目录下，创建一个项目文件夹coderhub，进行文件夹，并将项目从git上克隆下来
+
+2、为服务器安装git`dnf install git`
+
+3、克隆项目：`git clone 地址`
+
+4、安装vscode插件（remote SSH），使得我们可以通过vscode连接远程服务器，直接操作服务器中的项目
+
+使用remote SSH需要输入：`ssh root@服务器公网ip`，连接时需要输入密码（选择linux）
+
+注：如果报错了“试图写入的管道不存在”，需要修改.ssh文件夹下deconfig的权限
+
+5、在vscode打开服务器的项目，并修改env
+
+6、启动项目 `node ./src/main.js`,如果还不能访问的话，需要去配置安全组（端口）
+
+尝试打开保存项目中的图片`http://47.106.182.193:8000/upload/12/avatar`成功！！
+
+
+
+### 8.6 pm2启动项目
+
+在真实的部署过程中，我们会使用⼀个⼯具pm2来管理Node的进程：
+
+PM2是⼀个Node的进程管理器，我们可以使用它来管理Node的后台进程；
+
+这样在关闭终端时，Node进程会继续执行，那么服务器就可以继续为前端提供服务了；
+
+安装`npm install pm2 -g`
+
+常用命令
+
+```shell
+#命令进程
+pm2 start app.js --name my-api
+
+#显示所有进程状态
+pm2 list
+
+#停止指定进程
+pm2 stop 0
+
+#停止所有进程
+pm2 stop all
+
+#重启所有进程
+pm2 restart all
+
+#重启指定进程
+pm2 restart 0
+
+#杀死指定的进程
+pm2 delete 0 
+
+#杀死全部进程
+pm2 delete all 
+
+#后台运行pm2 启动4个app.js，实现负载均衡
+pm2 start app.js -i 4
+```
+
+启动coderhub项目
+
+`pm2 start ./src/main.js --name coderhub`
